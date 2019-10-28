@@ -37,8 +37,8 @@ public class AddCarrierToCountryController {
 
     @FXML public PreparedStatement addCarrierToCountryCommand() throws SQLException {
         PreparedStatement addCellCarrierPreparedStatement= DbConnection.getInstance().getConnection().prepareStatement("INSERT INTO carrier_to_country(country_code ,carrier_id) VALUES (?,?)");
-        addCellCarrierPreparedStatement.setString(1, addCarrierCountryIDField.getText());
-        addCellCarrierPreparedStatement.setString(2, addCountryCarrierIDField.getText());
+        addCellCarrierPreparedStatement.setString(1, addCarrierCountryIDField.getText().trim());
+        addCellCarrierPreparedStatement.setString(2, addCountryCarrierIDField.getText().trim());
         return addCellCarrierPreparedStatement;
 
     }

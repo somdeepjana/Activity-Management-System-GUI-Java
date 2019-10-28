@@ -14,8 +14,8 @@ public class AddCellCarrierController {
 
     @FXML public PreparedStatement addCellCarrierCommand() throws SQLException {
         PreparedStatement addCellCarrierPreparedStatement= DbConnection.getInstance().getConnection().prepareStatement("INSERT INTO cell_carriers(id, carrier_name) VALUES (?,?)");
-        addCellCarrierPreparedStatement.setString(1, addCellCarrierIdField.getText());
-        addCellCarrierPreparedStatement.setString(2, addCellCarrierNameField.getText().toUpperCase());
+        addCellCarrierPreparedStatement.setString(1, addCellCarrierIdField.getText().trim());
+        addCellCarrierPreparedStatement.setString(2, addCellCarrierNameField.getText().trim().toUpperCase());
         return addCellCarrierPreparedStatement;
 
     }
