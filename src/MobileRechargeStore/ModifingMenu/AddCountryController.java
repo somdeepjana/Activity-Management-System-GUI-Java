@@ -14,8 +14,8 @@ public class AddCountryController {
 
     @FXML public PreparedStatement addCountryCommand() throws SQLException {
         PreparedStatement addCountryPreparedStatement= DbConnection.getInstance().getConnection().prepareStatement("INSERT INTO countries(ph_code, country_name) VALUES (?,?)");
-        addCountryPreparedStatement.setString(1, addCountryPhCodeField.getText().toUpperCase());
-        addCountryPreparedStatement.setString(2, addCountryNameField.getText());
+        addCountryPreparedStatement.setString(1, addCountryPhCodeField.getText().trim().toUpperCase());
+        addCountryPreparedStatement.setString(2, addCountryNameField.getText().trim());
         return addCountryPreparedStatement;
 
     }

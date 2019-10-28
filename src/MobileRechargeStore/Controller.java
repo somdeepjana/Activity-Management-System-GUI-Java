@@ -4,6 +4,7 @@ package MobileRechargeStore;
 import MobileRechargeStore.ModifingMenu.AddCarrierToCountryController;
 import MobileRechargeStore.ModifingMenu.AddCellCarrierController;
 import MobileRechargeStore.ModifingMenu.AddCountryController;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +18,7 @@ public class Controller {
 
     @FXML Parent mainWindow;
     @FXML ComboBox<String> selectTable;
-    @FXML TableView dataTable;
+    @FXML TableView<ObservableList> dataTable;
     @FXML TextField searchBox;
 
     ResultSet temprs;
@@ -28,6 +29,23 @@ public class Controller {
         selectTable.getItems().addAll("Countries", "Cell Carriers", "Carrier to Country", "Tariffs", "Redemtion Code", "Payments", "Users", "Login Activity");
         searchBox.setDisable(true);
     }
+
+    @FXML public void aboutDialog(){
+        Dialog<ButtonType> aboutDialog = new Dialog<>();
+        aboutDialog.initOwner(mainWindow.getScene().getWindow());
+        aboutDialog.setTitle("Adding Country");
+        FXMLLoader aboutDialogFXML= new FXMLLoader(getClass().getResource("aboutWindow.fxml"));
+        try{
+            aboutDialog.getDialogPane().setContent(aboutDialogFXML.load());
+        }catch (Exception e){
+            System.out.println("DialogPane Scene graph Cannot be loaded: ");
+            e.printStackTrace();
+        }
+        aboutDialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        aboutDialog.showAndWait();
+        aboutDialog.close();
+    }
+
     @FXML public void loadDataIntoTable() {
         sql= null;
         try {
@@ -123,8 +141,7 @@ public class Controller {
                     System.out.println("Resultset is Created for Login Activity");
                     break;
             }
-            temprs = DbConnection.getInstance().getConnection().createStatement().executeQuery(sql);
-            new DrawTable().setTableData(temprs, dataTable);
+            searchDataIntoTable();
             searchBox.setDisable(false);
             System.out.println("Table Drawn");
         } catch (Exception e) {
@@ -228,6 +245,7 @@ public class Controller {
                 countryAdded.setTitle("Insertion Done");
                 countryAdded.setHeaderText("The Country Added");
                 countryAdded.showAndWait();
+                searchDataIntoTable();
             }catch (Exception e){
                 Alert countryNotAdded = new Alert(Alert.AlertType.ERROR);
                 countryNotAdded.setTitle("Insert Error");
@@ -303,5 +321,63 @@ public class Controller {
             }
         }
         addCarrierToCountryDilog.close();
+    }
+
+    @FXML public void deleteField(){
+        String deleteSQL= null;
+        if(dataTable.getSelectionModel().isEmpty()){
+            Alert nothingSelected = new Alert(Alert.AlertType.ERROR);
+            nothingSelected.setTitle("Selection Error");
+            nothingSelected.setHeaderText("Nothing is Selected");
+            nothingSelected.setContentText("Please select the content from the Table");
+            nothingSelected.showAndWait();
+        }else{
+            switch (selectTable.getSelectionModel().getSelectedItem()){
+                case "Countries":
+                    deleteSQL= "DELETE FROM countries WHERE ph_code = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Cell Carriers":
+                    deleteSQL= "DELETE FROM cell_carriers  WHERE id = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Carrier to Country":
+                    deleteSQL= "DELETE carrier_to_country " +
+                            "FROM carrier_to_country INNER JOIN countries ON carrier_to_country.country_code = countries.ph_code " +
+                            "INNER JOIN cell_carriers ON carrier_to_country.carrier_id = cell_carriers.id " +
+                            "WHERE cell_carriers.carrier_name = '"+dataTable.getSelectionModel().getSelectedItem().get(0) + "' " +
+                            "AND countries.country_name= '" + dataTable.getSelectionModel().getSelectedItem().get(1) + "'";
+                    break;
+                case "Tariffs":
+                    deleteSQL= "DELETE FROM tariffs WHERE id = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Redemtion Code":
+                    deleteSQL= "DELETE FROM redemtion_codes WHERE offer_code = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Payments":
+                    deleteSQL= "DELETE FROM payments WHERE transaction_id = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Users":
+                    deleteSQL= "DELETE FROM users WHERE id = '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "'";
+                    break;
+                case "Login Activity":
+                    deleteSQL= "DELETE FROM login_activity WHERE user_id= '" + dataTable.getSelectionModel().getSelectedItem().get(0) + "' " +
+                            "AND login_ip = '" + dataTable.getSelectionModel().getSelectedItem().get(1) + "' " +
+                            "AND login_time = '" + dataTable.getSelectionModel().getSelectedItem().get(2) + "'";
+                    break;
+            }
+            try{
+                Alert deleteConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                deleteConfirmation.setTitle("Delete Confirmation");
+                deleteConfirmation.setHeaderText("Doy You want to delete the selected Record?");
+                deleteConfirmation.setContentText("Chose OK  if Yes");
+                Optional<ButtonType> userConfirmation  = deleteConfirmation.showAndWait();
+                if(userConfirmation  !=  null && userConfirmation.get()== ButtonType.OK){
+                    System.out.println("Delete SQL Command: " + deleteSQL);
+                    DbConnection.getInstance().getConnection().createStatement().executeUpdate(deleteSQL);
+                    searchDataIntoTable();
+                }
+            }catch (Exception e){
+                System.out.println("Cannot delete the record");
+            }
+        }
     }
 }
