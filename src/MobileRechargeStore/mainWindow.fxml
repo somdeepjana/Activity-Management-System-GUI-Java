@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="mainWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MobileRechargeStore.Controller">
+   <top>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mobile Recharge Store" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+   </top>
+   <center>
+      <TableView fx:id="dataTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin></TableView>
+   </center>
+   <right>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="9.0" BorderPane.alignment="CENTER">
+         <children>
+            <ComboBox fx:id="selectTable" minWidth="140.0" onAction="#loadDataIntoTable">
+               <VBox.margin>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </ComboBox>
+            <TextField fx:id="searchBox" onKeyTyped="#searchDataIntoTable">
+               <VBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Button fx:id="addCountryButton" mnemonicParsing="false" onAction="#addCountry" text="Add Country" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </VBox.margin></Button>
+            <Button fx:id="addCellCarrierButton" layoutX="43.0" layoutY="83.0" mnemonicParsing="false" onAction="#addCellCarrier" text="Add Cell Carrier" textAlignment="CENTER" />
+            <Button fx:id="addCarrierToCountryButton" layoutX="35.0" layoutY="117.0" mnemonicParsing="false" onAction="#addCarrierToCountry" text="Add Carrier to Country" textAlignment="CENTER" />
+         </children>
+      </VBox>
+   </right>
+</BorderPane>
