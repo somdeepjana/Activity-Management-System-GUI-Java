@@ -12,7 +12,7 @@ public class DbConnection {
     private String serverPort= "3306";
     private final String databaseName= "/mobilerechargestore";
     private String DbUserId= "root";
-    private String DbPassword= "Conan@1887Doyle";
+    private String DbPassword= "toor";
 
     private Connection dbSeason= null;
 
